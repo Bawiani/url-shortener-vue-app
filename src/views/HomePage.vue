@@ -13,6 +13,7 @@ import EmailModal from '../components/EmailModal.vue'
     const url = ref("");
     const message = ref("");
     const qrImage = ref("");
+    const token = ref("");
     const buttonText = ref("Shorten Link");
     const isMessage = ref(false);
     const showQRCodeModal = ref(false);
@@ -28,7 +29,8 @@ import EmailModal from '../components/EmailModal.vue'
       onUnmounted(() => clearInterval(interval));
 
       index.value = 1;
-
+      
+      token.value = ""
     });
 
     const shortenLink = async() => {
@@ -118,7 +120,7 @@ import EmailModal from '../components/EmailModal.vue'
 
   <div class="w-full h-full md:px-28">
     <div class="bg-gray-100 pl-2 md:h-[700px]">
-      <HeaderComponent />
+      <HeaderComponent v-bind:token="token" />
       <div class="relative justify-between md:top-8 md:flex">
         <div class="max-w-md pl-2 md:pl-8">
           <div :class="isVisible ? 'block' : 'hidden'">

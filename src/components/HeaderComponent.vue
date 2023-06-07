@@ -1,10 +1,40 @@
 <script setup lang="ts">
 
     import { ref } from 'vue'
-    import { RouterLink, RouterView } from 'vue-router'
+    import { RouterLink, useRouter } from 'vue-router'
+    import LogIn from './LogIn.vue'
+    import SignUp from './SignUp.vue'
+    import CreateAccount from './CreateAccount.vue'
     
         const navbar = ref(false);
+        const showLogInModal = ref(false);
+        const showSignUpModal = ref(false);
+        const showCreateAccountModal = ref(false);
 
+        const route = useRouter();
+
+        const props = defineProps(['token']);
+
+        const logOut = () => {
+            localStorage.clear();
+            route.push({name: 'HomePage'});
+        }
+
+        const openLoginModal = () => {
+            showSignUpModal.value = false;
+            showCreateAccountModal.value = false;
+            showLogInModal.value = true;
+        }
+
+        const openCreateAccountModal = () => {
+            showSignUpModal.value = false;
+            showCreateAccountModal.value = true;
+        }
+
+        const openSignupModal = () => {
+            showLogInModal.value = false;
+            showSignUpModal.value = true;
+        }
 </script>
 
 <template>
@@ -38,9 +68,16 @@
                         <li class="md:text-lg md:font-bold text-sm font-semibold text-cyan-900"><a href="#about">About Us</a></li>
                         <li class="md:text-lg md:font-bold text-sm font-semibold text-cyan-900"><a href="#work">How it works</a></li>
                         <li class="md:text-lg md:font-bold text-sm font-semibold text-cyan-900"><a href="">Contact Us</a></li>
-                        <div class="flex space-x-4">
-                            <li class="md:text-lg md:font-bold text-sm font-semibold text-cyan-900"><a href="">Login</a></li>
-                            <li class="w-32 space-y-5 text-center text-blue-700 border-2 border-blue-700 rounded-3xl"><a href="">Sign Up Free</a></li>
+                        <div v-if="props.token" class="flex space-x-4">
+                            <li class="md:text-lg md:font-bold text-sm font-semibold text-cyan-900"><button @click="logOut">Logout</button></li>
+                            <li class="w-32 space-y-5 text-center text-blue-700 border-2 border-blue-700 rounded-3xl"><a href="">Welcome</a></li>
+                        </div>
+                        <div v-else class="flex space-x-4">
+                            <li class="md:text-lg md:font-bold text-sm font-semibold text-cyan-900"><button @click="showLogInModal = true">Login</button></li>
+                                <LogIn v-show="showLogInModal" @close-modal="showLogInModal = false" @open-signup-modal="openSignupModal" />
+                            <li class="w-32 space-y-5 text-center text-blue-700 border-2 border-blue-700 rounded-3xl"><button @click="showSignUpModal = true">Sign Up Free</button></li>
+                                <SignUp v-show="showSignUpModal" @close-modal="showSignUpModal = false" @open-login-modal="openLoginModal" @open-account-modal="openCreateAccountModal" />
+                                <CreateAccount v-show="showCreateAccountModal" @close-modal="showCreateAccountModal = false" @open-login-modal="openLoginModal" />
                         </div>
                     </ul>
                 </div>
